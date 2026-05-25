@@ -1,4 +1,4 @@
-# controladores/prestamos_controlador.py
+
 from modelos.libro import Libro
 from modelos.persona import Persona
 from modelos.prestamo import Prestamo

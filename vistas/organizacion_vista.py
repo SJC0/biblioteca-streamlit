@@ -4,11 +4,11 @@ import streamlit as st
 class VistaOrganizacion:
     @staticmethod
     def mostrar():
-        st.header("📊 Reportes de Organización")
+        st.header("Reportes de Organización")
     
     @staticmethod
     def mostrar_pendientes(df):
-        st.subheader("📋 Préstamos Pendientes")
+        st.subheader("Préstamos Pendientes")
         if not df.empty:
             st.dataframe(df[['libro', 'persona', 'fecha_prestamo']], use_container_width=True)
         else:
@@ -16,7 +16,7 @@ class VistaOrganizacion:
     
     @staticmethod
     def mostrar_culminados(df):
-        st.subheader("✅ Préstamos Completados")
+        st.subheader(" Préstamos Completados")
         if not df.empty:
             st.dataframe(df, use_container_width=True)
         else:

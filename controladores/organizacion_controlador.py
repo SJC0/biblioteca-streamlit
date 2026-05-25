@@ -1,4 +1,4 @@
-# controladores/organizacion_controlador.py
+
 from modelos.prestamo import Prestamo
 
 class ControladorOrganizacion:

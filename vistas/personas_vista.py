@@ -1,10 +1,10 @@
-# vistas/personas_vista.py
+
 import streamlit as st
 
 class VistaPersonas:
     @staticmethod
     def mostrar():
-        st.header("👥 Gestión de Personas")
+        st.header(" Gestión de Personas")
     
     @staticmethod
     def sin_permiso():
@@ -13,7 +13,7 @@ class VistaPersonas:
     
     @staticmethod
     def formulario_agregar():
-        with st.expander("➕ Agregar persona"):
+        with st.expander("Agregar persona"):
             nombre = st.text_input("Nombre")
             apellido = st.text_input("Apellido")
             documento = st.text_input("Documento (opcional)")

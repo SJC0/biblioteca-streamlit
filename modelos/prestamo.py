@@ -1,4 +1,4 @@
-# modelos/prestamo.py
+
 from basedatos.gestor_bd import bd
 from datetime import datetime
 import pandas as pd

@@ -1,4 +1,4 @@
-# controladores/personas_controlador.py
+
 from modelos.persona import Persona
 
 class ControladorPersonas:

@@ -18,25 +18,37 @@ class VistaInventario:
     
     @staticmethod
     def mostrar_tabla(dataframe):
-        st.dataframe(dataframe, use_container_width=True)
+        if dataframe is not None and not dataframe.empty:
+            st.dataframe(dataframe, use_container_width=True)
+        else:
+            st.info("No hay libros registrados")
     
     @staticmethod
     def formulario_actualizar(libros):
         st.subheader("📦 Modificar existencias")
-        if libros:
-            seleccion = st.selectbox(
+        if libros and len(libros) > 0:
+            # Crear opciones para el selectbox
+            opciones = {f"{libro['titulo']} (Stock: {libro['stock']})": libro['id'] for libro in libros}
+            
+            seleccion_texto = st.selectbox(
                 "Selecciona un libro",
-                libros,
-                format_func=lambda x: f"{x['titulo']} (Stock: {x['stock']})"
+                list(opciones.keys())
             )
-            nuevo_stock = st.number_input(
-                "Nuevo stock",
-                min_value=0,
-                step=1,
-                value=seleccion['stock']
-            )
-            actualizar = st.button("Actualizar stock")
-            return seleccion['id'], nuevo_stock, actualizar
+            
+            libro_id = opciones[seleccion_texto]
+            libro_seleccionado = next((l for l in libros if l['id'] == libro_id), None)
+            
+            if libro_seleccionado:
+                nuevo_stock = st.number_input(
+                    "Nuevo stock",
+                    min_value=0,
+                    step=1,
+                    value=int(libro_seleccionado['stock'])
+                )
+                actualizar = st.button("Actualizar stock")
+                return libro_id, nuevo_stock, actualizar
+            else:
+                return None, None, False
         else:
             st.info("No hay libros registrados")
             return None, None, False

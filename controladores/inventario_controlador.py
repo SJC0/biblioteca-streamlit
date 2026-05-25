@@ -26,4 +26,14 @@ class ControladorInventario:
     
     @staticmethod
     def libros_con_stock():
-        return Libro.obtener_con_stock()
+        """Devuelve una lista de diccionarios para usar en selectbox"""
+        resultados = Libro.obtener_con_stock()
+        # Convertir a lista de diccionarios con las claves correctas
+        libros = []
+        for row in resultados:
+            libros.append({
+                'id': row['id'],
+                'titulo': row['titulo'],
+                'stock': row['stock']
+            })
+        return libros

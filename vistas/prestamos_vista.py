@@ -4,7 +4,7 @@ import streamlit as st
 class VistaPrestamos:
     @staticmethod
     def mostrar():
-        st.header("📖 Gestión de Préstamos")
+        st.header("Gestión de Préstamos")
     
     @staticmethod
     def sin_permiso():
@@ -14,18 +14,25 @@ class VistaPrestamos:
     @staticmethod
     def formulario_prestamo(libros, personas):
         with st.expander("🆕 Nuevo préstamo"):
-            if libros and personas:
-                libro = st.selectbox("Libro", libros, format_func=lambda x: f"{x['id']} - {x['titulo']}")
-                persona = st.selectbox("Persona", personas, format_func=lambda x: f"{x['id']} - {x['nombre']} {x['apellido']}")
+            if libros and len(libros) > 0 and personas and len(personas) > 0:
+                # Convertir a formato para selectbox
+                opciones_libros = {f"{libro['id']} - {libro['titulo']}": libro['id'] for libro in libros}
+                opciones_personas = {f"{persona['id']} - {persona['nombre']} {persona['apellido']}": persona['id'] for persona in personas}
+                
+                libro_texto = st.selectbox("Libro", list(opciones_libros.keys()))
+                persona_texto = st.selectbox("Persona", list(opciones_personas.keys()))
+                
+                libro_id = opciones_libros[libro_texto]
+                persona_id = opciones_personas[persona_texto]
                 enviado = st.button("Realizar préstamo")
-                return libro['id'], persona['id'], enviado
+                return libro_id, persona_id, enviado
             else:
                 st.warning("No hay libros disponibles o personas registradas")
                 return None, None, False
     
     @staticmethod
     def formulario_devolucion(pendientes):
-        with st.expander("📤 Devolver libro"):
+        with st.expander("Devolver libro"):
             if pendientes is not None and not pendientes.empty:
                 st.subheader("Préstamos pendientes")
                 st.dataframe(pendientes[['libro', 'persona', 'fecha_prestamo']], use_container_width=True)
@@ -34,9 +41,9 @@ class VistaPrestamos:
                     lambda fila: f"{fila['id']} - {fila['persona']} - {fila['libro']}",
                     axis=1
                 )
-                seleccion = st.selectbox("Seleccionar préstamo a devolver", opciones)
+                seleccion = st.selectbox("Seleccionar préstamo a devolver", opciones.tolist())
                 prestamo_id = int(seleccion.split(" - ")[0])
-                libro_id = pendientes[pendientes['id']==prestamo_id]['libro_id'].values[0]
+                libro_id = pendientes[pendientes['id']==prestamo_id]['libro_id'].values[0] if 'libro_id' in pendientes.columns else None
                 devolver = st.button("Confirmar devolución")
                 return prestamo_id, libro_id, devolver
             else:

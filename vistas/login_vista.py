@@ -12,7 +12,7 @@ class VistaLogin:
         except:
             pass
         
-        st.title("📚 Universidad de Cundinamarca - Biblioteca")
+        st.title("Universidad de Cundinamarca - Biblioteca")
         st.subheader("Inicio de Sesión")
         
         col1, col2 = st.columns([2, 1])
@@ -24,4 +24,4 @@ class VistaLogin:
     
     @staticmethod
     def error():
-        st.error("❌ Credenciales incorrectas")
+        st.error(" Credenciales incorrectas")

@@ -1,4 +1,4 @@
-# controladores/autenticacion_controlador.py
+
 from basedatos.gestor_bd import bd
 from modelos.usuario import Usuario
 

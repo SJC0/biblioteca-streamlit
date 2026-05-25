@@ -1,4 +1,4 @@
-# app.py - Punto de entrada de la aplicación MVC
+
 import streamlit as st
 from controladores.autenticacion_controlador import ControladorAutenticacion
 from controladores.inventario_controlador import ControladorInventario
@@ -14,7 +14,7 @@ from vistas.organizacion_vista import VistaOrganizacion
 # Configuración de la página
 st.set_page_config(page_title="Biblioteca Universidad de Cundinamarca", layout="wide")
 
-# ========== ESTILOS VERDES ==========
+# Estilo página
 st.markdown(
     """
     <style>
@@ -44,11 +44,11 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ========== ESTADO DE SESIÓN ==========
+# estado_sesión
 if 'logueado' not in st.session_state:
     st.session_state.logueado = False
 
-# ========== LOGIN ==========
+# login
 if not st.session_state.logueado:
     usuario, contrasena = VistaLogin.mostrar()
     if st.button("Ingresar"):
@@ -60,15 +60,15 @@ if not st.session_state.logueado:
         else:
             VistaLogin.error()
 
-# ========== APLICACIÓN PRINCIPAL ==========
+# APP
 else:
     usuario_actual = st.session_state.usuario_actual
     
     # Barra lateral
-    st.sidebar.title(f"👋 Hola {usuario_actual.nombre_usuario}")
+    st.sidebar.title(f"Hola {usuario_actual.nombre_usuario}")
     st.sidebar.write(f"**Rol:** {usuario_actual.rol}")
     
-    if st.sidebar.button("🚪 Cerrar sesión"):
+    if st.sidebar.button("Cerrar sesión"):
         st.session_state.logueado = False
         st.session_state.usuario_actual = None
         st.rerun()
@@ -76,8 +76,9 @@ else:
     # Menú según rol
     menu = st.sidebar.selectbox("Menú", usuario_actual.obtener_menu())
     
-    # ========== CONTROLADOR DE INVENTARIO ==========
-    if menu == "📚 Inventario":
+    # Inventario
+
+    if menu == "Inventario":
         VistaInventario.mostrar()
         
         # Agregar libro
@@ -90,19 +91,23 @@ else:
         
         # Mostrar libros
         df = ControladorInventario.listar_libros()
-        VistaInventario.mostrar_tabla(df)
+        if df is not None and not df.empty:
+            VistaInventario.mostrar_tabla(df)
+        else:
+            st.info("No hay libros registrados")
         
         # Actualizar stock
         libros = ControladorInventario.libros_con_stock()
-        libro_id, nuevo_stock, actualizar = VistaInventario.formulario_actualizar(libros)
-        if actualizar and libro_id:
-            ok, msg = ControladorInventario.modificar_stock(libro_id, nuevo_stock)
-            VistaInventario.mensaje(msg, not ok)
-            if ok:
-                st.rerun()
+        if libros and len(libros) > 0:
+            libro_id, nuevo_stock, actualizar = VistaInventario.formulario_actualizar(libros)
+            if actualizar and libro_id:
+                ok, msg = ControladorInventario.modificar_stock(libro_id, nuevo_stock)
+                VistaInventario.mensaje(msg, not ok)
+                if ok:
+                    st.rerun()
     
-    # ========== CONTROLADOR DE PRÉSTAMOS ==========
-    elif menu == "📖 Préstamos":
+    # prestamos
+    elif menu == "Préstamos":
         if not usuario_actual.puede_gestionar_prestamos():
             VistaPrestamos.sin_permiso()
         else:
@@ -127,8 +132,8 @@ else:
                 if ok:
                     st.rerun()
     
-    # ========== CONTROLADOR DE PERSONAS ==========
-    elif menu == "👥 Personas":
+    #Personas
+    elif menu == "Personas":
         if not usuario_actual.puede_gestionar_prestamos():
             VistaPersonas.sin_permiso()
         else:
@@ -144,8 +149,8 @@ else:
             df = ControladorPersonas.listar_personas()
             VistaPersonas.mostrar_tabla(df)
     
-    # ========== CONTROLADOR DE ORGANIZACIÓN ==========
-    elif menu == "📊 Organización":
+    # Organización
+    elif menu == "Organización":
         VistaOrganizacion.mostrar()
         
         pendientes = ControladorOrganizacion.prestamos_pendientes()

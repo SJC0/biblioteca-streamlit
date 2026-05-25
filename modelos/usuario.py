@@ -22,11 +22,11 @@ class Usuario(ABC):
 
 class Bibliotecario(Usuario):
     def obtener_menu(self):
-        return ["📚 Inventario", "📖 Préstamos", "👥 Personas", "📊 Organización"]
+        return ["Inventario", "Préstamos", "Personas", "Organización"]
     
     def puede_gestionar_prestamos(self):
         return True
 
 class Socio(Usuario):
     def obtener_menu(self):
-        return ["📚 Inventario"]
+        return ["Inventario"]
