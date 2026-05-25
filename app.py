@@ -1,4 +1,4 @@
-# app.py - Versión sin Firebase (usa SQLite)
+
 import streamlit as st
 import sqlite3
 from datetime import datetime
@@ -7,7 +7,7 @@ import os
 
 st.set_page_config(page_title="Biblioteca Universidad de Cundinamarca", layout="wide")
 
-# ========== CONEXIÓN A BASE DE DATOS ==========
+# conexión a la base de datos
 def get_db():
     """Conectar a SQLite (se crea automáticamente)"""
     conn = sqlite3.connect('biblioteca.db')
@@ -67,7 +67,7 @@ def init_db():
 # Inicializar la base de datos
 init_db()
 
-# ========== FUNCIONES DE LA BIBLIOTECA ==========
+# funciones biblioteca
 def verificar_usuario(username, password):
     conn = get_db()
     cursor = conn.cursor()
@@ -152,12 +152,12 @@ def devolver_prestamo(prestamo_id, libro_id):
     conn.commit()
     conn.close()
 
-# ========== INTERFAZ DE USUARIO ==========
+# Interfaz de usuario
 if 'logueado' not in st.session_state:
     st.session_state.logueado = False
 
 if not st.session_state.logueado:
-    st.title("📚 Universidad de Cundinamarca - Biblioteca")
+    st.title(" Universidad de Cundinamarca - Biblioteca")
     st.subheader("Inicio de Sesión")
     
     username = st.text_input("Usuario")
@@ -171,24 +171,24 @@ if not st.session_state.logueado:
             st.session_state.logueado = True
             st.rerun()
         else:
-            st.error("❌ Credenciales inválidas")
+            st.error(" Credenciales inválidas")
 else:
-    st.sidebar.title(f"👋 Hola {st.session_state.usuario}")
+    st.sidebar.title(f" Hola {st.session_state.usuario}")
     st.sidebar.write(f"**Rol:** {st.session_state.rol}")
     
-    if st.sidebar.button("🚪 Cerrar sesión"):
+    if st.sidebar.button(" Cerrar sesión"):
         st.session_state.logueado = False
         st.rerun()
     
     if st.session_state.rol == 'bibliotecario':
-        menu = st.sidebar.selectbox("Menú", ["📚 Inventario", "📖 Préstamos", "👥 Personas", "📊 Organización"])
+        menu = st.sidebar.selectbox("Menú", ["Inventario", "Préstamos", "Personas", "Organización"])
     else:
-        menu = st.sidebar.selectbox("Menú", ["📚 Inventario"])
+        menu = st.sidebar.selectbox("Menú", ["Inventario"])
     
-    if menu == "📚 Inventario":
-        st.header("📚 Inventario de Libros")
+    if menu == "Inventario":
+        st.header("Inventario de Libros")
         
-        with st.expander("➕ Agregar nuevo libro"):
+        with st.expander("Agregar nuevo libro"):
             titulo = st.text_input("Título")
             autor = st.text_input("Autor")
             isbn = st.text_input("ISBN")
@@ -196,12 +196,12 @@ else:
             if st.button("Guardar libro"):
                 if titulo and autor and isbn:
                     if agregar_libro(titulo, autor, isbn, stock):
-                        st.success("✅ Libro agregado")
+                        st.success("Libro agregado")
                         st.rerun()
                     else:
-                        st.error("❌ ISBN duplicado")
+                        st.error("ISBN duplicado")
                 else:
-                    st.error("❌ Completa todos los campos")
+                    st.error("Completa todos los campos")
         
         df_libros = obtener_libros()
         st.dataframe(df_libros, use_container_width=True)
@@ -214,13 +214,13 @@ else:
                                           value=int(df_libros[df_libros['id']==libro_seleccionado]['stock'].values[0]))
             if st.button("Actualizar stock"):
                 actualizar_stock(libro_seleccionado, nuevo_stock)
-                st.success("✅ Stock actualizado")
+                st.success("Stock actualizado")
                 st.rerun()
     
-    elif menu == "📖 Préstamos":
-        st.header("📖 Gestión de Préstamos")
+    elif menu == "Préstamos":
+        st.header("Gestión de Préstamos")
         
-        with st.expander("🆕 Nuevo préstamo"):
+        with st.expander("Nuevo préstamo"):
             df_libros = obtener_libros()
             libros_disponibles = df_libros[df_libros['stock'] > 0]
             df_personas = obtener_personas()
@@ -232,12 +232,12 @@ else:
                                        format_func=lambda x: f"{df_personas[df_personas['id']==x]['nombre'].values[0]} {df_personas[df_personas['id']==x]['apellido'].values[0]}")
                 if st.button("Realizar préstamo"):
                     crear_prestamo(libro, persona)
-                    st.success("✅ Préstamo registrado")
+                    st.success("Préstamo registrado")
                     st.rerun()
             else:
                 st.warning("No hay libros disponibles o personas")
         
-        with st.expander("📤 Devolver libro"):
+        with st.expander("Devolver libro"):
             df_pendientes = obtener_prestamos_pendientes()
             if not df_pendientes.empty:
                 st.dataframe(df_pendientes, use_container_width=True)
@@ -246,33 +246,33 @@ else:
                 libro_id = df_pendientes[df_pendientes['id']==prestamo_seleccionado]['id'].values[0]
                 if st.button("Confirmar devolución"):
                     devolver_prestamo(prestamo_seleccionado, libro_id)
-                    st.success("✅ Devolución completada")
+                    st.success("Devolución completada")
                     st.rerun()
             else:
                 st.info("No hay préstamos pendientes")
     
-    elif menu == "👥 Personas":
-        st.header("👥 Gestión de Personas")
+    elif menu == "Personas":
+        st.header("Gestión de Personas")
         
-        with st.expander("➕ Agregar persona"):
+        with st.expander("Agregar persona"):
             nombre = st.text_input("Nombre")
             apellido = st.text_input("Apellido")
             documento = st.text_input("Documento")
             if st.button("Guardar persona"):
                 if nombre and apellido:
                     if agregar_persona(nombre, apellido, documento):
-                        st.success("✅ Persona agregada")
+                        st.success("Persona agregada")
                         st.rerun()
                     else:
-                        st.error("❌ Documento duplicado")
+                        st.error("Documento duplicado")
                 else:
-                    st.error("❌ Nombre y apellido requeridos")
+                    st.error("Nombre y apellido requeridos")
         
         df_personas = obtener_personas()
         st.dataframe(df_personas, use_container_width=True)
     
-    elif menu == "📊 Organización":
-        st.header("📊 Reportes")
+    elif menu == "Organización":
+        st.header("Reportes")
         
         tab1, tab2 = st.tabs(["Préstamos Pendientes", "Libros más prestados"])
         with tab1:
