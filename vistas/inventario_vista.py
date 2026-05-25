@@ -4,11 +4,11 @@ import streamlit as st
 class VistaInventario:
     @staticmethod
     def mostrar():
-        st.header("📚 Inventario de Libros")
+        st.header("Inventario de Libros")
     
     @staticmethod
     def formulario_agregar():
-        with st.expander("➕ Agregar nuevo libro"):
+        with st.expander("Agregar nuevo libro"):
             titulo = st.text_input("Título")
             autor = st.text_input("Autor")
             isbn = st.text_input("ISBN")
@@ -25,7 +25,7 @@ class VistaInventario:
     
     @staticmethod
     def formulario_actualizar(libros):
-        st.subheader("📦 Modificar existencias")
+        st.subheader("Modificar existencias")
         if libros and len(libros) > 0:
             # Crear opciones para el selectbox
             opciones = {f"{libro['titulo']} (Stock: {libro['stock']})": libro['id'] for libro in libros}
