@@ -13,7 +13,7 @@ class VistaPrestamos:
     
     @staticmethod
     def formulario_prestamo(libros, personas):
-        with st.expander("🆕 Nuevo préstamo"):
+        with st.expander("Nuevo préstamo"):
             if libros and len(libros) > 0 and personas and len(personas) > 0:
                 # Convertir a formato para selectbox
                 opciones_libros = {f"{libro['id']} - {libro['titulo']}": libro['id'] for libro in libros}
